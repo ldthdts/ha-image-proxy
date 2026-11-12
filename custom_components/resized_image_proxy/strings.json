@@ -1,0 +1,57 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Resized Image Proxy",
+        "description": "Create the proxy. A random token will be generated to protect the image URLs."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Resized Image Proxy is already set up."
+    }
+  },
+  "config_subentries": {
+    "output": {
+      "title": "Image output",
+      "initiate_flow": {
+        "user": "Add image output"
+      },
+      "entry_type": "Image output",
+      "step": {
+        "user": {
+          "title": "Add image output",
+          "description": "Pick an image entity and the size the display needs. The converted image is served as a baseline JPEG.",
+          "data": {
+            "name": "Name",
+            "source": "Source image entity",
+            "width": "Width (px)",
+            "height": "Height (px)",
+            "fit": "Fit"
+          }
+        },
+        "reconfigure": {
+          "title": "Edit image output",
+          "description": "Change the source image or the size the display needs.",
+          "data": {
+            "name": "Name",
+            "source": "Source image entity",
+            "width": "Width (px)",
+            "height": "Height (px)",
+            "fit": "Fit"
+          }
+        }
+      },
+      "abort": {
+        "reconfigure_successful": "Image output updated."
+      }
+    }
+  },
+  "selector": {
+    "fit": {
+      "options": {
+        "crop": "Crop to fill (no bars, edges are cut)",
+        "letterbox": "Fit inside (whole image, black bars)"
+      }
+    }
+  }
+}

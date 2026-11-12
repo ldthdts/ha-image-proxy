@@ -1,0 +1,13 @@
+{
+  "domain": "resized_image_proxy",
+  "name": "Resized Image Proxy",
+  "codeowners": ["@ldthdts"],
+  "config_flow": true,
+  "dependencies": ["http", "image"],
+  "documentation": "https://github.com/ldthdts/resized-image-proxy",
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/ldthdts/resized-image-proxy/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}
