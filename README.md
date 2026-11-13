@@ -26,7 +26,8 @@ For each display, select **Add image output** on the proxy and set:
   - *Fit inside* keeps the whole image and adds black bars.
 
 Each output creates its own device and image entity, named after the output,
-for example `image.clock`. You can preview the converted image there.
+for example `image.clock`. You can preview the converted image there. Its
+`entity_picture` URL changes when the source image content changes.
 
 ## Use the URL on the display
 
@@ -39,6 +40,8 @@ Each output has a `proxy_path` attribute, for example:
 Put your Home Assistant base URL in front of it, for example
 `http://homeassistant.local:8123/api/resized_image_proxy/...`.
 The clock should fetch this URL.
+This stable URL always serves the current image; it does not change when the
+image changes.
 
 The token is random and generated when you add the proxy. Anyone with the
 full URL can read the image, so treat it as a secret. Do not share it.

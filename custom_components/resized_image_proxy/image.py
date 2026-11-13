@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import hashlib
 import logging
 from typing import TYPE_CHECKING
+from urllib.parse import urlsplit, urlunsplit
 
 from homeassistant.components.image import ImageEntity, async_get_image
 from homeassistant.config_entries import ConfigSubentry
@@ -70,6 +72,7 @@ class ResizedImageProxyOutput(ImageEntity):
         self._fit: str = subentry.data[CONF_FIT]
         self._output_title = subentry.title
         self._cache: tuple[bytes, bytes] | None = None
+        self._image_version: str | None = None
         self._attr_unique_id = subentry.subentry_id
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, subentry.subentry_id)},
@@ -85,6 +88,16 @@ class ResizedImageProxyOutput(ImageEntity):
                 token=entry.data[CONF_TOKEN], output_id=subentry.subentry_id
             ),
         }
+
+    @property
+    def entity_picture(self) -> str | None:
+        """Include the source image version in Home Assistant's image URL."""
+        picture = super().entity_picture
+        if picture is None or self._image_version is None:
+            return picture
+        url = urlsplit(picture)
+        query = f"{url.query}&v={self._image_version}" if url.query else f"v={self._image_version}"
+        return urlunsplit(url._replace(query=query))
 
     async def async_added_to_hass(self) -> None:
         """Refresh the converted image whenever the source image changes."""
@@ -117,7 +130,11 @@ class ResizedImageProxyOutput(ImageEntity):
             jpeg = await self.hass.async_add_executor_job(
                 to_jpeg, source.content, self._width, self._height, self._fit
             )
+            source_hash = await self.hass.async_add_executor_job(
+                hashlib.sha256, source.content
+            )
             self._cache = (source.content, jpeg)
+            self._image_version = source_hash.hexdigest()
             self._attr_image_last_updated = dt_util.utcnow()
             if self.entity_id:
                 self.async_write_ha_state()
